@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "796267469330",
+    "project_id": "vet-student",
+    "storage_bucket": "vet-student.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796267469330:android:dee30b8739b868b05596cb",
+        "android_client_info": {
+          "package_name": "com.example.vet_student"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796267469330-9i221ls967s9mprlsujt0ba69v6nq79a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5kRjxT0JwjrxIr9RCn7xzBoFXYceJEKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796267469330-9i221ls967s9mprlsujt0ba69v6nq79a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
