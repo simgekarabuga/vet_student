@@ -1,6 +1,8 @@
-/*import 'package:c_messaging/c_messaging.dart';
-
+import 'package:c_messaging/c_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:vet_student/generated/l10n.dart';
+import 'package:vet_student/model/user.dart';
+import 'package:vet_student/service/firebase/firebase_custom_settings.dart';
 
 class CMessagingSettings {
   static void init(BuildContext context, String userId) {
@@ -24,9 +26,9 @@ class CMessagingSettings {
 
   static FirebaseSettings _firebaseSettings = FirebaseSettings(
     usersCollectionName: "user",
-    usernameKey: Dealer.fullNameKey,
-    userProfilePhotoUrlKey: Dealer.profilePhotoKey,
-    userNotificationIdKey: Dealer.notificationIdKey,
+    usernameKey: User.fullNameKey,
+    userProfilePhotoUrlKey: User.profilePhotoKey,
+    userNotificationIdKey: User.notificationIdKey,
     fcmSettings: FcmSettings(
       projectId: FirebaseCustomSettings.projectId,
       privateKeyId: FirebaseCustomSettings.privateKeyId,
@@ -59,4 +61,4 @@ class CMessagingSettings {
   static ContactsPageSettings _contactsPageSettings = ContactsPageSettings();
 
   static MessagesPageSettings _messagesPageSettings = MessagesPageSettings();
-}*/
+}

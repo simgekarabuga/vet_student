@@ -23,9 +23,7 @@ class ProfileDetailPage extends StatelessWidget {
     );
     return BackButton(
       onPressed: () {
-        viewModel.openHomePage(
-          context,
-        );
+        viewModel.onBackPressed(context);
       },
     );
   }

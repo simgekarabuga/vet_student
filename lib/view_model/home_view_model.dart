@@ -64,6 +64,6 @@ class HomeViewModel with ChangeNotifier {
   }
 
   void openProfileDetailPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.profileDetailPageKey);
+    Navigator.pushNamed(context, Routes.profileDetailPageKey);
   }
 }

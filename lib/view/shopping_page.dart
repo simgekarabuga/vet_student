@@ -134,7 +134,7 @@ class ShoppingPage extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: BackButton(
         onPressed: () {
-          viewModel.openMainPage(context);
+          viewModel.onBackPressed(context);
         },
       ),
     );

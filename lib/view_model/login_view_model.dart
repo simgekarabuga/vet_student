@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:vet_student/generated/l10n.dart';
 import 'package:vet_student/model/user.dart';
 import 'package:vet_student/repository/auth_repository.dart';
+import 'package:vet_student/service/firebase/c_messaging_settings.dart';
+import 'package:vet_student/tools/locator.dart';
 import 'package:vet_student/tools/routes.dart';
 
-import '../tools/locator.dart';
 
 enum LoginViewState { idle, loading }
 
@@ -29,7 +30,7 @@ class LoginViewModel with ChangeNotifier {
       password,
     );
     if (user != null && user.userId != null) {
-      //CMessagingSettings.init(context, user.userId!);
+      CMessagingSettings.init(context, user.userId!);
       openMainPage(context);
     } else {
       SnackBar snackBar = SnackBar(

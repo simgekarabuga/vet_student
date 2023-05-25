@@ -7,8 +7,8 @@ class ShoppingViewModel with ChangeNotifier {
 
 
 
-  void openMainPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.mainPageKey);
+  void onBackPressed(BuildContext context) {
+    Navigator.pop(context);
   }
 
   int _currentTabIndex = 0;

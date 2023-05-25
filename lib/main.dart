@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:vet_student/firebase_options.dart';
+import 'package:vet_student/service/firebase/firebase_options.dart';
 import 'package:vet_student/tools/locator.dart';
 import 'package:vet_student/tools/routes.dart';
 import 'package:vet_student/view/splash_page.dart';

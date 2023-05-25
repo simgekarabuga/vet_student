@@ -29,7 +29,7 @@ class ProfileViewModel with ChangeNotifier {
   }
 
   void openSettingsPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.settingsPageKey);
+    Navigator.pushNamed(context, Routes.settingsPageKey);
   }
 
   void updateProfile(BuildContext context) async {

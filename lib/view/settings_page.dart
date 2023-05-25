@@ -29,7 +29,7 @@ class SettingsPage extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: BackButton(onPressed: () {
-        viewModel.openProfilePage(
+        viewModel.onBackPressed(
           context,
         );
       }),

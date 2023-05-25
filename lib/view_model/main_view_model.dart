@@ -11,10 +11,10 @@ class MainViewModel with ChangeNotifier {
   MainViewState get state => _state;
 
   void openMessagePage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.messagePageKey);
+    Navigator.pushNamed(context, Routes.messagePageKey);
   }
   void openShoppingPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.shoppingPageKey);
+    Navigator.pushNamed(context, Routes.shoppingPageKey);
   }
 
 
