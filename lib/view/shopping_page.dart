@@ -41,8 +41,6 @@ class ShoppingPage extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     return Column(
       children: [
-        SafeArea(child: _buildBackButton(context)),
-
         Expanded(
           child: Consumer<ShoppingViewModel>(
             builder: (context, viewModel, child) =>
@@ -123,20 +121,5 @@ class ShoppingPage extends StatelessWidget {
       default:
         return '';
     }
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    ShoppingViewModel viewModel = Provider.of<ShoppingViewModel>(
-      context,
-      listen: false,
-    );
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: BackButton(
-        onPressed: () {
-          viewModel.onBackPressed(context);
-        },
-      ),
-    );
   }
 }

@@ -12,7 +12,7 @@ class SplashViewModel with ChangeNotifier {
       String? currentUserId = _authRepository.getCurrentUserId();
       if (currentUserId != null) {
         CMessagingSettings.init(context, currentUserId);
-        _openMainPage(context);
+        _openShoppingPage(context);
       } else {
         _openLoginPage(context);
       }
@@ -23,7 +23,7 @@ class SplashViewModel with ChangeNotifier {
     Navigator.pushReplacementNamed(context, Routes.loginPageKey);
   }
 
-  void _openMainPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.mainPageKey);
+  void _openShoppingPage(BuildContext context) {
+    Navigator.pushReplacementNamed(context, Routes.shoppingPageKey);
   }
 }

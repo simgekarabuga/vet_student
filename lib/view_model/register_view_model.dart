@@ -54,8 +54,8 @@ class RegisterViewModel with ChangeNotifier {
     }
   }
 
-  void openMainPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.mainPageKey);
+  void openShoppingPage(BuildContext context) {
+    Navigator.pushReplacementNamed(context, Routes.shoppingPageKey);
   }
 
   void openLoginPage(BuildContext context) {

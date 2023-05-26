@@ -31,7 +31,7 @@ class LoginViewModel with ChangeNotifier {
     );
     if (user != null && user.userId != null) {
       CMessagingSettings.init(context, user.userId!);
-      openMainPage(context);
+      _openShoppingPage(context);
     } else {
       SnackBar snackBar = SnackBar(
         content: Text(S.of(context).loginFailed),
@@ -40,8 +40,8 @@ class LoginViewModel with ChangeNotifier {
     }
   }
 
-  void openMainPage(BuildContext context) {
-    Navigator.pushReplacementNamed(context, Routes.mainPageKey);
+  void _openShoppingPage(BuildContext context) {
+    Navigator.pushReplacementNamed(context, Routes.shoppingPageKey);
   }
 
   void openRegisterPage(BuildContext context) {
