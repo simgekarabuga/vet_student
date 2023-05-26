@@ -8,6 +8,8 @@ class User {
   static const String passwordKey = 'password';
   static const String notificationIdKey = 'notificationId';
   static const String imageUrlKey = 'imageUrl';
+  static const String backgroundImageUrlKey = 'backgroundImageUrl';
+  static const String specialImageUrlKey = 'specialImageUrls';
 
   String? userId;
   String fullName;
@@ -18,6 +20,8 @@ class User {
   String password;
   String notificationId;
   String imageUrl;
+  String backgroundImageUrl;
+  String specialImageUrl;
 
   User({
     required this.userId,
@@ -29,6 +33,8 @@ class User {
     this.password = '',
     this.notificationId = '',
     this.imageUrl = '',
+    this.backgroundImageUrl = '',
+    this.specialImageUrl = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -46,11 +52,13 @@ class User {
 
   User.fromMap(this.userId, Map<String, dynamic> map)
       : fullName = map[fullNameKey] ?? '',
-       description = map[descriptionKey] ?? '',
+        description = map[descriptionKey] ?? '',
         eMail = map[eMailKey] ?? '',
         phone = map[phoneKey] ?? '',
         profilePhoto = map[profilePhotoKey] ?? '',
         password = map[passwordKey] ?? '',
         imageUrl = map[imageUrlKey] ?? '',
+        backgroundImageUrl = map[backgroundImageUrlKey] ?? '',
+        specialImageUrl = map[specialImageUrlKey] ?? '',
         notificationId = map[notificationIdKey] ?? '';
 }

@@ -10,6 +10,8 @@ import 'package:vet_student/repository/user_database_repository.dart';
 import 'package:vet_student/tools/locator.dart';
 import 'package:vet_student/tools/routes.dart';
 
+enum ImageType { profile, background, special }
+
 class ProfileViewModel with ChangeNotifier {
   final AuthRepository _authRepository = locator<AuthRepository>();
   final UserDatabaseRepository _userDatabaseRepository =
@@ -19,34 +21,43 @@ class ProfileViewModel with ChangeNotifier {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+
   User? user;
-  File? image;
+
+  File? profileImage;
+  File? backgroundImage;
+  File? specialImage;
 
   ProfileViewModel() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getCurrentUser();
+      _getCurrentUser();
     });
+  }
+
+  void _getCurrentUser() async {
+    user = await _userDatabaseRepository.getCurrentUser();
+    notifyListeners();
+  }
+
+  void updateProfile(String fullName, String description) {
+    String? userId = user?.userId;
+    if (user != null && userId != null) {
+      Map<String, dynamic> newValues = {};
+      if (fullName != user!.fullName) {
+        newValues[User.fullNameKey] = fullName;
+      }
+      if (description != user!.description) {
+        newValues[User.descriptionKey] = description;
+      }
+
+      if (newValues.isNotEmpty) {
+        _userDatabaseRepository.updateUser(userId, newValues);
+      }
+    }
   }
 
   void openSettingsPage(BuildContext context) {
     Navigator.pushNamed(context, Routes.settingsPageKey);
-  }
-
-  void updateProfile(BuildContext context) async {
-    String? currentUserId = _authRepository.getCurrentUserId();
-    if (currentUserId != null) {
-      Map<String, dynamic> newValues = {
-        User.fullNameKey: fullNameController.text.trim(),
-        User.phoneKey: phoneController.text.trim(),
-        User.descriptionKey: phoneController.text.trim(),
-      };
-      await _userDatabaseRepository.updateUser(currentUserId, newValues);
-    } else {
-      SnackBar snackBar = SnackBar(
-        content: Text(S.of(context).loginFailed),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
   }
 
   void getCurrentUser() async {
@@ -60,58 +71,48 @@ class ProfileViewModel with ChangeNotifier {
     }
   }
 
-  void addImageForSpecialPics(BuildContext context, ImageSource source) async {
+  void addImage(
+    BuildContext context,
+    ImageType imageType,
+    ImageSource source,
+  ) async {
     try {
       String? userId = await _authRepository.getCurrentUserId();
-      print("UserId: " + (userId?? "null"));
-      if (userId != null) {
-        XFile? pickedImage = await ImagePicker().pickImage(source: source);
-        if (pickedImage != null) {
-          image = File(
-            pickedImage.path,
-          );
-          if (image != null) {
-            String? imageUrl =
-                await _storageDatabaseRepository.uploadProfilePhoto(image!);
-            if (imageUrl != null) {
-              _userDatabaseRepository.updateUser(
-                userId,
-                {
-                  User.imageUrlKey: imageUrl,
-                },
-              );
-              User? user = await _userDatabaseRepository.getCurrentUser();
-            }
-          }
-        }
-      }
-    } catch (e) {
-      print("${S.of(context).failedImage} :$e");
-    }
-  }
 
-  void addImage(BuildContext context, ImageSource source) async {
-    try {
-      String? userId = await _authRepository.getCurrentUserId();
-      print(userId);
       if (userId != null) {
         XFile? pickedImage = await ImagePicker().pickImage(source: source);
         if (pickedImage != null) {
-          image = File(
-            pickedImage.path,
-          );
-          if (image != null) {
-            String? imageUrl =
-                await _storageDatabaseRepository.uploadProfilePhoto(image!);
-            if (imageUrl != null) {
-              _userDatabaseRepository.updateUser(
-                userId,
-                {
-                  User.imageUrlKey: imageUrl,
-                },
-              );
-              User? user = await _userDatabaseRepository.getCurrentUser();
+          File imageFile = File(pickedImage.path);
+
+          if (imageType == ImageType.profile) {
+            profileImage = imageFile;
+          }
+          if (imageType == ImageType.background) {
+            backgroundImage = imageFile;
+          }
+          if (imageType == ImageType.special) {
+            specialImage = imageFile;
+          }
+
+          String? imageUrl =
+              await _storageDatabaseRepository.uploadProfilePhoto(imageFile);
+          if (imageUrl != null) {
+            Map<String, dynamic> newValues = {};
+
+            if (imageType == ImageType.profile) {
+              newValues[User.imageUrlKey] = imageUrl;
             }
+            if (imageType == ImageType.background) {
+              newValues[User.backgroundImageUrlKey] = imageUrl;
+            }
+            if (imageType == ImageType.special) {}
+
+            _userDatabaseRepository.updateUser(
+              userId,
+              newValues,
+            );
+            user = await _userDatabaseRepository.getCurrentUser();
+            notifyListeners();
           }
         }
       }

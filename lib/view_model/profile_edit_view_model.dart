@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vet_student/model/user.dart';
-import 'package:vet_student/repository/auth_repository.dart';
 import 'package:vet_student/repository/user_database_repository.dart';
 import 'package:vet_student/tools/locator.dart';
 
 class ProfileEditViewModel with ChangeNotifier {
-  final AuthRepository _authRepository = locator<AuthRepository>();
   final UserDatabaseRepository _userDatabaseRepository =
       locator<UserDatabaseRepository>();
 
