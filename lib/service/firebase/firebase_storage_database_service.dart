@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vet_student/repository/auth_repository.dart';
 import 'package:vet_student/service/base/storage_database_service.dart';
 import 'package:vet_student/tools/locator.dart';
@@ -13,11 +14,13 @@ class FirebaseStorageDatabaseService implements StorageDatabaseService {
   File? image;
 
   @override
-  Future<String?> uploadProfilePhoto(File file) async {
-    String? userId = await _authRepository.getCurrentUserId();
-    if (userId != null) {
+  Future<String?> uploadUserImage(File file, String folderName) async {
+    String randomUid = const Uuid().v4();
 
-      Reference reference = _storage.ref("users/$userId.jpg");
+    String? userId = _authRepository.getCurrentUserId();
+    if (userId != null) {
+      Reference reference =
+          _storage.ref("users/$userId/$folderName/$randomUid.jpg");
       UploadTask task = reference.putFile(file);
 
       try {
@@ -28,5 +31,6 @@ class FirebaseStorageDatabaseService implements StorageDatabaseService {
         return null;
       }
     }
+    return null;
   }
 }

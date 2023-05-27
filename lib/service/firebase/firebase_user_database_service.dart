@@ -15,6 +15,10 @@ class FirebaseUserDatabaseService implements UserDatabaseService {
 
   @override
   Future<void> updateUser(String userId, Map<String, dynamic> newValues) async {
+    if (newValues.containsKey(User.specialImageUrlsKey)) {
+      String imageUrl = newValues[User.specialImageUrlsKey];
+      newValues[User.specialImageUrlsKey] = FieldValue.arrayUnion([imageUrl]);
+    }
     _firestore.collection("users").doc(userId).update(newValues);
   }
 
@@ -26,6 +30,14 @@ class FirebaseUserDatabaseService implements UserDatabaseService {
           await _firestore.collection("users").doc(userId).get();
       Map<String, dynamic>? userMap = snapshot.data();
       if (userMap != null) {
+        List<String> specialImagesStr = [];
+        List<dynamic>? specialImages = userMap[User.specialImageUrlsKey];
+        if (specialImages != null) {
+          for (dynamic imageUrl in specialImages) {
+            specialImagesStr.add(imageUrl as String);
+          }
+        }
+        userMap[User.specialImageUrlsKey] = specialImagesStr;
         User user = User.fromMap(userId, userMap);
         return user;
       }

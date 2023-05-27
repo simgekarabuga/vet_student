@@ -9,7 +9,7 @@ class User {
   static const String notificationIdKey = 'notificationId';
   static const String imageUrlKey = 'imageUrl';
   static const String backgroundImageUrlKey = 'backgroundImageUrl';
-  static const String specialImageUrlKey = 'specialImageUrls';
+  static const String specialImageUrlsKey = 'specialImageUrls';
 
   String? userId;
   String fullName;
@@ -21,7 +21,7 @@ class User {
   String notificationId;
   String imageUrl;
   String backgroundImageUrl;
-  String specialImageUrl;
+  List<String> specialImageUrls;
 
   User({
     required this.userId,
@@ -34,7 +34,7 @@ class User {
     this.notificationId = '',
     this.imageUrl = '',
     this.backgroundImageUrl = '',
-    this.specialImageUrl = '',
+    this.specialImageUrls = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -59,6 +59,6 @@ class User {
         password = map[passwordKey] ?? '',
         imageUrl = map[imageUrlKey] ?? '',
         backgroundImageUrl = map[backgroundImageUrlKey] ?? '',
-        specialImageUrl = map[specialImageUrlKey] ?? '',
+        specialImageUrls = map[specialImageUrlsKey] ?? [],
         notificationId = map[notificationIdKey] ?? '';
 }

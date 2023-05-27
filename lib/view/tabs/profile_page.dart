@@ -1,13 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:vet_student/generated/l10n.dart';
-
 import 'package:vet_student/tools/assets.dart';
 import 'package:vet_student/tools/color_helper.dart';
-
 import 'package:vet_student/view_model/tabs_view_model/profile_view_model.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -54,6 +50,10 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildProfileImage(BuildContext context) {
+    ProfileViewModel viewModel = Provider.of<ProfileViewModel>(
+      context,
+      listen: false,
+    );
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.14,
       child: Padding(
@@ -70,27 +70,27 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           child: ClipOval(
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (builder) => _buildBottomSheet(
-                    context,
-                    ImageType.profile,
-                  ),
-                );
-              },
-              child: Consumer<ProfileViewModel>(
-                builder: (context, viewModel, child) =>
-                    viewModel.user?.imageUrl != null &&
-                            (viewModel.user?.imageUrl ?? "").isNotEmpty
-                        ? Image.network(viewModel.user!.imageUrl)
-                        : viewModel.profileImage != null
-                            ? Image.file(
-                                File(viewModel.profileImage!.path),
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(Assets.userLogo),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: GestureDetector(
+                onTap: () {
+                  viewModel.addImage(context, ImageType.profile);
+                },
+                child: Consumer<ProfileViewModel>(
+                  builder: (context, viewModel, child) =>
+                      viewModel.user?.imageUrl != null &&
+                              (viewModel.user?.imageUrl ?? "").isNotEmpty
+                          ? Image.network(
+                              viewModel.user!.imageUrl,
+                              fit: BoxFit.fill,
+                            )
+                          : viewModel.profileImage != null
+                              ? Image.file(
+                                  File(viewModel.profileImage!.path),
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(Assets.userLogo),
+                ),
               ),
             ),
           ),
@@ -99,67 +99,43 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomSheet(
-    BuildContext context,
-    ImageType imageType,
-  ) {
+  Widget _buildBackgroundImage(BuildContext context) {
     ProfileViewModel viewModel = Provider.of<ProfileViewModel>(
       context,
       listen: false,
     );
     return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextButton(
-          onPressed: () {
-            viewModel.addImage(context, imageType, ImageSource.gallery);
-          },
-          child: Text(S.of(context).galery),
-        ),
-        TextButton(
-          onPressed: () {
-            viewModel.addImage(context, imageType, ImageSource.camera);
-          },
-          child: Text(S.of(context).camera),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBackgroundImage(BuildContext context) {
-    return Column(
       children: [
         Row(
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.999,
-              height: MediaQuery.of(context).size.height * 0.17,
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.999,
-                height: MediaQuery.of(context).size.height * 0.17,
-                child: GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (builder) => _buildBottomSheet(
-                        context,
-                        ImageType.background,
-                      ),
-                    );
-                  },
-                  child: Consumer<ProfileViewModel>(
-                    builder: (context, viewModel, child) =>
-                        viewModel.user?.backgroundImageUrl != null &&
-                                (viewModel.user?.backgroundImageUrl ?? "")
-                                    .isNotEmpty
-                            ? Image.network(viewModel.user!.backgroundImageUrl)
-                            : viewModel.backgroundImage != null
-                                ? Image.file(
-                                    File(viewModel.backgroundImage!.path),
-                                    fit: BoxFit.fitWidth,
-                                  )
-                                : Image.asset(Assets.userBackgroundImage),
-                  ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1,
+              height: MediaQuery.of(context).size.width * 0.35,
+              child: GestureDetector(
+                onTap: () {
+                  viewModel.addImage(context, ImageType.background);
+                },
+                child: Consumer<ProfileViewModel>(
+                  builder: (context, viewModel, child) =>
+                      viewModel.user?.backgroundImageUrl != null &&
+                              (viewModel.user?.backgroundImageUrl ?? "")
+                                  .isNotEmpty
+                          ? Image.network(
+                              viewModel.user!.backgroundImageUrl,
+                              fit: BoxFit.fitWidth,
+                              alignment: Alignment.topCenter,
+                            )
+                          : viewModel.backgroundImage != null
+                              ? Image.file(
+                                  File(viewModel.backgroundImage!.path),
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                )
+                              : Image.asset(
+                                  Assets.userBackgroundImage,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                ),
                 ),
               ),
             ),
@@ -222,19 +198,24 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildSpecialImages(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(),
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        itemBuilder: _buildSpecialImageListItem,
-      ),
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.25,
+      child: Consumer<ProfileViewModel>(
+        builder: (context, viewModel, child) => ListView.builder(
+          physics: ClampingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: viewModel.user?.specialImageUrls.length ?? 0,
+          itemBuilder: _buildSpecialImageListItem,
+        ),
+      ),
     );
   }
 
   Widget _buildSpecialImageListItem(BuildContext context, int index) {
+    ProfileViewModel viewModel = Provider.of<ProfileViewModel>(
+      context,
+      listen: false,
+    );
     return Padding(
       padding: const EdgeInsets.only(
         left: 5,
@@ -242,10 +223,7 @@ class ProfilePage extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (builder) => _buildBottomSheet(context, ImageType.special),
-          );
+          viewModel.addImage(context, ImageType.special);
         },
         child: AspectRatio(
           aspectRatio: 1,
@@ -255,8 +233,10 @@ class ProfilePage extends StatelessWidget {
             ),
             child: Consumer<ProfileViewModel>(
               builder: (context, viewModel, child) =>
-                  viewModel.user?.specialImageUrl != null
-                      ? Image.network(viewModel.user!.specialImageUrl)
+                  viewModel.user?.specialImageUrls != null
+                      ? Image.network(
+                          viewModel.user!.specialImageUrls[index],
+                        )
                       : viewModel.specialImage != null
                           ? Image.file(
                               File(viewModel.specialImage!.path),
@@ -292,10 +272,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildProductsGridItem(BuildContext context, int index) {
-    ProfileViewModel viewModel = Provider.of<ProfileViewModel>(
-      context,
-      listen: false,
-    );
     return Padding(
       padding: const EdgeInsets.only(
         left: 5,

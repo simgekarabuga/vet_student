@@ -1,5 +1,5 @@
 import 'dart:io';
 
 abstract class StorageDatabaseBase {
-  Future<String?> uploadProfilePhoto(File file);
+  Future<String?> uploadUserImage(File file, String folderName);
 }

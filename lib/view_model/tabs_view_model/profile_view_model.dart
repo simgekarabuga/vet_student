@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:vet_student/generated/l10n.dart';
 import 'package:vet_student/model/user.dart';
 import 'package:vet_student/repository/auth_repository.dart';
@@ -9,6 +8,7 @@ import 'package:vet_student/repository/storage_database_repository.dart';
 import 'package:vet_student/repository/user_database_repository.dart';
 import 'package:vet_student/tools/locator.dart';
 import 'package:vet_student/tools/routes.dart';
+import 'package:vet_student/view/common/photo_picker.dart';
 
 enum ImageType { profile, background, special }
 
@@ -74,46 +74,66 @@ class ProfileViewModel with ChangeNotifier {
   void addImage(
     BuildContext context,
     ImageType imageType,
-    ImageSource source,
   ) async {
     try {
-      String? userId = await _authRepository.getCurrentUserId();
+      String? userId = _authRepository.getCurrentUserId();
 
-      if (userId != null) {
-        XFile? pickedImage = await ImagePicker().pickImage(source: source);
-        if (pickedImage != null) {
-          File imageFile = File(pickedImage.path);
+      if (userId != null && user != null) {
+        int photoCount = user!.specialImageUrls.length;
 
-          if (imageType == ImageType.profile) {
-            profileImage = imageFile;
-          }
-          if (imageType == ImageType.background) {
-            backgroundImage = imageFile;
-          }
-          if (imageType == ImageType.special) {
-            specialImage = imageFile;
-          }
+        if (photoCount < 5) {
+          File? imageFile = await PhotoPicker(
+            takePhotoText: S.of(context).takePhoto,
+            chooseFromGalleryText: S.of(context).chooseFromGallery,
+            cancelText: S.of(context).cancel,
+            cropImage: true,
+            aspectRatio: imageType == ImageType.background ? 3.0 : 1.0,
+          ).pick(context);
 
-          String? imageUrl =
-              await _storageDatabaseRepository.uploadProfilePhoto(imageFile);
-          if (imageUrl != null) {
-            Map<String, dynamic> newValues = {};
+          if (imageFile != null) {
+            String folderName = '';
 
             if (imageType == ImageType.profile) {
-              newValues[User.imageUrlKey] = imageUrl;
+              profileImage = imageFile;
+              folderName = 'profile_photos';
             }
             if (imageType == ImageType.background) {
-              newValues[User.backgroundImageUrlKey] = imageUrl;
+              backgroundImage = imageFile;
+              folderName = 'background_images';
             }
-            if (imageType == ImageType.special) {}
+            if (imageType == ImageType.special) {
+              specialImage = imageFile;
+              folderName = 'special_images';
+            }
 
-            _userDatabaseRepository.updateUser(
-              userId,
-              newValues,
+            String? imageUrl = await _storageDatabaseRepository.uploadUserImage(
+              imageFile,
+              folderName,
             );
-            user = await _userDatabaseRepository.getCurrentUser();
-            notifyListeners();
+
+            if (imageUrl != null) {
+              Map<String, dynamic> newValues = {};
+
+              if (imageType == ImageType.profile) {
+                newValues[User.imageUrlKey] = imageUrl;
+              }
+              if (imageType == ImageType.background) {
+                newValues[User.backgroundImageUrlKey] = imageUrl;
+              }
+              if (imageType == ImageType.special) {
+                newValues[User.specialImageUrlsKey] = imageUrl;
+              }
+
+              _userDatabaseRepository.updateUser(
+                userId,
+                newValues,
+              );
+              user = await _userDatabaseRepository.getCurrentUser();
+              notifyListeners();
+            }
           }
+        } else {
+          // TODO: Uyarı göster
         }
       }
     } catch (e) {

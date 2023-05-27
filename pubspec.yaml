@@ -49,9 +49,11 @@ dependencies:
   firebase_storage: ^11.1.0
   shared_preferences: ^2.1.0
 
-
   google_sign_in: ^5.4.4
   image_picker: ^0.8.6+4
+  image_cropper: ^3.0.1
+
+  uuid: ^3.0.7
 
   c_messaging:
     git:
